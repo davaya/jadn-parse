@@ -1,0 +1,71 @@
+/* Generated from schema\exp.jadn, Fri Jul  5 09:34:45 2019 */
+/*
+       title: Experimental Schema Features
+      module: oasis-open.org/openc2/oc2ls-exp/v1.0
+       patch: 0
+ description: Profile used to test schema features not used in existing language or profiles
+     exports: ['Target', 'Specifiers', 'Args', 'Results']
+*/
+Target = Choice {                            // New targets
+     1 hashes          Hashes,                   // Hash values displayed as hex
+     2 ipv4_addr_s     IPv4-String,              // IPv4 address displayed as type-specific string (dotted-decimal): '192.168.0.254'
+     3 ipv4_addr_x     IPv4-Hex,                 // IPv4 address displayed as hex: 'C0A800FE'
+     4 ipv4_addr_b64   IPv4-Base64url,           // IPv4 address displayed as Base64-url: 'wKgA_g'
+     5 ipv6_addr_s     IPv6-String,              // IPv6 address displayed as type-specific string (colon-hex): ''
+     6 ipv6_addr_x     IPv6-Hex,                 // IPv6 address displayed as hex: ''
+     7 ipv6_addr_b64   IPv6-Base64url,           // IPv6 address displayed as Base64-url: ''
+     8 ipv4_net        IPv4-Net,                 // IPv4 Network CIDR string
+     9 ipv6_net        IPv6-Net                  // IPv6 Network CIDR string
+}
+
+Hashes = Map {                               // Cryptographic Hash values
+     1 md5             Bin-128 optional,         // MD5 hash as defined in RFC3121
+     4 sha1            Bin-160 optional,         // SHA1 hash as defined in RFC3174
+     6 sha256          Bin-256 optional          // SHA256 as defined in RFC6234
+}
+
+Bin-128 = Binary{16..16} /x                  // 128 bit value, hex display
+
+Bin-160 = Binary{20..20} /x                  // 160 bit value, hex display
+
+Bin-256 = Binary{32..32} /x                  // 256 bit value, hex display
+
+IPv4-Hex = Binary{4..4} /x                   // Value must be 32 bits [4..4].  Value displayed in hex (Binary.x)
+
+IPv4-Base64url = Binary{4..4}                // Value must be 32 bits [4..4].  Value displayed in base64url (Binary) default
+
+IPv4-String = Binary{4..4} /ipv4-addr        // Value must be 32 bits [4..4].  Value displayed in ipv4 dotted-decimal (Binary.ipv4-addr)
+
+IPv6-Hex = Binary{16..16} /x                 // Value must be 128 bits [16..16].  Value displayed in hex (Binary.x)
+
+IPv6-Base64url = Binary{16..16}              // Value must be 128 bits [16..16].  Value displayed in base64url (Binary) default
+
+IPv6-String = Binary{16..16} /ipv6-addr      // Value must be 128 bits [16..16].  Value displayed in ipv6 colon-hex (Binary.ipv6-addr)
+
+IPv4-Net = Array /ipv4-net {
+     1 Binary,                                   // address::
+     2 Integer                                   // prefix_len::
+}
+
+IPv6-Net = Array /ipv6-net {
+     1 Binary,                                   // address::
+     2 Integer                                   // prefix_len::
+}
+
+Results = Map {                              // Experimental results
+     1 knps            KNP[0..*],                // Generic set of key:number pairs.
+    42 battery         Battery-Properties optional // Set of custom properties defined for an energy storage device
+}
+
+KNP = Array {
+     1 String,                                   // key:: name of this item
+     2 Number                                    // value:: numeric value of this item
+}
+
+Battery-Properties = Map {
+     7 voltage         Integer optional,         // Battery output voltage (millivolts)
+    18 charge          Percentage optional,      // State of charge (percent)
+    26 model           String optional           // Product name for this device
+}
+
+Percentage = Number{0..100}                  // Real number in the range 0.0-100.0
