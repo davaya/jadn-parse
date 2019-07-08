@@ -1,4 +1,4 @@
-from lark import Lark, Transformer
+from lark import Lark, Transformer, exceptions
 import json
 import logging
 import os
@@ -67,10 +67,13 @@ class JADN(Transformer):
         return ['$' + str(tree[0])]
 
     def pattern(self, tree):
-        return tree
+        assert len(tree) == 1
+        assert tree[0][:2] == '(%'
+        assert tree[0][-2:] == '%)'
+        return [str(tree[0])[1:-2]]
 
     def vrange(self, tree):
-        return tree
+        return ['{}'[k] + str(tree[k]) for k in (0, 1) if tree[k] != '*']
 
     def format(self, tree):
         assert len(tree) == 1
@@ -79,14 +82,11 @@ class JADN(Transformer):
     def fieldstr(self, tree):
         return tree
 
-    def multi(self, tree, default=(0,0)):
+    def multi(self, tree):
         minc, maxc = (0, 1) if tree[0] == 'optional' else tree
         maxc = 0 if maxc == '*' else maxc
         d = [minc, maxc]
         return ['[]'[k] + str(d[k]) for k in [0,1] if d[k] != 1]
-
-    def mrange(self, tree):
-        return tree
 
     def tfield(self, tree):
         assert len(tree) == 1
@@ -104,7 +104,12 @@ if __name__ == '__main__':
     for fn in (f[0] for f in (os.path.splitext(i) for i in os.listdir(idir)) if f[1] == '.jidl'):
         print('**', fn)
         with open(os.path.join(idir, fn) + '.jidl') as f:
-            ptree = p.parse(f.read())
+            try:
+                ptree = p.parse(f.read())
+            except exceptions.UnexpectedCharacters as e:
+                print('*Parse Error*:', e)
+                continue
             print(ptree)
             print(ptree.pretty())
             JADN().transform(ptree)
+

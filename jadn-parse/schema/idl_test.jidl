@@ -1,0 +1,11 @@
+
+Multiplicities = Map {                  // Parse multiplicities
+     1 req          String,                 // Default multiplicity is required
+     2 reqexp       String[1..1],           // Explicit scalar required
+     3 opt          String optional,        // Optional keyword
+     4 optexp       String[0..1],           // Explicity optional range
+     5 arr          String[1..4],           // Required array
+     6 optarr       String[0..4],           // Optional array
+     7 unspec       String[1..*]            // Unspecified array size
+/*   8 bad          String[*..*]            // Invalid * for lower bound */
+}

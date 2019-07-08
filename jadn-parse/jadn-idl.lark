@@ -9,7 +9,7 @@ fields:     _LBR desc? field   (_COMMA desc?  field)*   desc  _RBR
 item:       FIELD_ID (_WS FIELD_NAME)?
 field:      FIELD_ID (_WS FIELD_NAME)? _WS fieldstr
 
-desc:      (_DESC (FIELD_NAME NAMETERM)? /.+/?)? _WSNL
+desc:       (_DESC /.+/?)? _WSNL
 
 // Definition rules
 
