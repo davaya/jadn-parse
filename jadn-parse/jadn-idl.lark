@@ -1,6 +1,6 @@
 // Lark grammar for JADN Type definitions
 
-start:      typedef+
+start:      typedef*
 
 typedef:    _WSNL? TYPE_NAME _ASSIGN typestring desc? (items | fields)?
 
@@ -9,7 +9,7 @@ fields:     _LBR desc? field   (_COMMA desc?  field)*   desc  _RBR
 item:       FIELD_ID (_WS FIELD_NAME)?
 field:      FIELD_ID (_WS FIELD_NAME)? _WS fieldstr
 
-desc:      (_DESC (FIELD_NAME NAMETERM)? /.+/?)? _WSNL?
+desc:      (_DESC (FIELD_NAME NAMETERM)? /.+/?)? _WSNL
 
 // Definition rules
 
@@ -31,7 +31,7 @@ fieldstr:   typestring (multi | tfield)?
 multi:      _WS /optional/
             | _mrange                       // Option: field multiplicity
 _mrange:    "[" UINT ".." UINTSTAR "]"      // Multiplicity: m GE 0, n GT 0 or *
-tfield:     "(&" FIELD_NAME ")"
+tfield:     "(&" (FIELD_ID | FIELD_NAME) ")"
 
 // Terminals
 

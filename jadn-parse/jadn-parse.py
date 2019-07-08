@@ -40,9 +40,10 @@ class JADN(Transformer):
         return [int(tree[0]), str(tree[1])]
 
     def field(self, tree):
-        assert len(tree) in (3, 4)
-        opts = [opt for opt in tree[3]] if len(tree) > 3 else []
-        return [int(tree[0]), str(tree[1]), tree[2], opts]
+        #assert len(tree) in (3, 4)
+        #opts = [opt for opt in tree[3]] if len(tree) > 3 else []
+        #return [int(tree[0]), str(tree[1]), tree[2], opts]
+        return tree
 
     def desc(self, tree):
         return {'desc': str(tree[0]) if len(tree) > 0 else '.'}
